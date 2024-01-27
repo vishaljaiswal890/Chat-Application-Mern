@@ -1,5 +1,5 @@
 import axios from "axios";
-import { UserContextProvider } from "./UserContext";
+import { UserContextProvider } from "./UserContext.jsx";
 import Routes from "./Routes";
 
 function App() {
