@@ -6,6 +6,7 @@ const User = require("./models/User");
 const cors = require("cors");
 const bcrypt = require("bcryptjs");
 const cookieParser = require("cookie-parser");
+const Message = require("./models/Message");
 const ws = require("ws");
 
 dotenv.config();
@@ -114,8 +115,8 @@ app.post("/register", async (req, res) => {
 const server = app.listen(4000);
 
 const wss = new ws.WebSocketServer({ server });
-
 wss.on("connection", (connection, req) => {
+  // read username and id from the cookie for this connection
   const cookies = req.headers.cookie;
   if (cookies) {
     const tokenCookieString = cookies
@@ -133,6 +134,32 @@ wss.on("connection", (connection, req) => {
       }
     }
   }
+
+  connection.on("message", async (message) => {
+    const messageData = JSON.parse(message.toString());
+    const { recipient, text } = messageData;
+    if (recipient && text) {
+      const messageDoc = await Message.create({
+        sender: connection.userId,
+        recipient,
+        text,
+      });
+      [...wss.clients]
+        .filter((c) => c.userId === recipient)
+        .forEach((c) =>
+          c.send(
+            JSON.stringify({
+              text,
+              sender: connection.userId,
+              recipient,
+              id: messageDoc._id,
+            })
+          )
+        );
+    }
+  });
+
+  // notify everyone about online people (when someone connects)
   [...wss.clients].forEach((client) => {
     client.send(
       JSON.stringify({
