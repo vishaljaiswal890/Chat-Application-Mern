@@ -62,8 +62,13 @@ app.get("/messages/:userId", async (req, res) => {
   const messages = await Message.find({
     sender: { $in: [userId, ourUserId] },
     recipient: { $in: [userId, ourUserId] },
-  }).sort({ createdAt: -1 });
+  }).sort({ createdAt: 1 });
   res.json(messages);
+});
+
+app.get("/people", async (req, res) => {
+  const users = await User.find({}, { _id: 1, username: 1 });
+  res.json(users);
 });
 
 app.get("/profile", (req, res) => {
@@ -141,6 +146,32 @@ const server = app.listen(4000);
 
 const wss = new ws.WebSocketServer({ server });
 wss.on("connection", (connection, req) => {
+  function notifyAboutOnlinePeople() {
+    [...wss.clients].forEach((client) => {
+      client.send(
+        JSON.stringify({
+          online: [...wss.clients].map((c) => ({
+            userId: c.userId,
+            username: c.username,
+          })),
+        })
+      );
+    });
+  }
+  connection.isAlive = true;
+  connection.timer = setInterval(() => {
+    connection.ping();
+    connection.deathTimer = setTimeout(() => {
+      connection.isAlive = false;
+      connection.terminate();
+      notifyAboutOnlinePeople();
+    }, 1000);
+  }, 5000);
+
+  connection.on("pong", () => {
+    clearTimeout(connection.deathTimer);
+  });
+
   // read username and id from the cookie for this connection
   const cookies = req.headers.cookie;
   if (cookies) {
@@ -177,7 +208,7 @@ wss.on("connection", (connection, req) => {
               text,
               sender: connection.userId,
               recipient,
-              id: messageDoc._id,
+              _id: messageDoc._id,
             })
           )
         );
@@ -185,14 +216,5 @@ wss.on("connection", (connection, req) => {
   });
 
   // notify everyone about online people (when someone connects)
-  [...wss.clients].forEach((client) => {
-    client.send(
-      JSON.stringify({
-        online: [...wss.clients].map((c) => ({
-          userId: c.userId,
-          username: c.username,
-        })),
-      })
-    );
-  });
+  notifyAboutOnlinePeople();
 });
