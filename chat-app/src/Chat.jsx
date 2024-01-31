@@ -42,7 +42,7 @@ export default function Chat() {
 
   function handleMessage(e) {
     const messageData = JSON.parse(e.data);
-    console.log({ e, messageData });
+    // console.log({ e, messageData });
     if ("online" in messageData) {
       showOnlinePeople(messageData.online);
     } else if ("text" in messageData) {
