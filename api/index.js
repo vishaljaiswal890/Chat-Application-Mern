@@ -113,6 +113,11 @@ app.post("/login", async (req, res) => {
   }
 });
 
+app.get("/logout", (req, res) => {
+  res.clearCookie("token");
+  res.sendStatus(200);
+});
+
 app.post("/register", async (req, res) => {
   const { username, password } = req.body;
   try {
