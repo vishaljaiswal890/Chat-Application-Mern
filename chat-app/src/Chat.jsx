@@ -61,7 +61,7 @@ export default function Chat() {
     localStorage.removeItem("token");
     localStorage.removeItem("username");
     localStorage.removeItem("id");
-    window.location.href = "/login";
+    window.location.href = "/";
   }
 
   function handleSendMessage(e) {
