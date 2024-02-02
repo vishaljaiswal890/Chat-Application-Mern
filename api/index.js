@@ -123,6 +123,11 @@ app.get("/logout", (req, res) => {
 app.post("/register", async (req, res) => {
   const { username, password } = req.body;
   try {
+    const existingUser = await User.findOne({ username });
+    if (existingUser) {
+      return res.status(409).json({ error: "User already exists" });
+    }
+
     const hashedPassword = bcrypt.hashSync(password, bcryptSalt);
     const createdUser = await User.create({
       username: username,

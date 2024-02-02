@@ -1,5 +1,7 @@
 import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { UserContext } from "./UserContext.jsx";
 
 const RegisterAndLoginForm = () => {
@@ -34,10 +36,23 @@ const RegisterAndLoginForm = () => {
       setId(data.id);
       setIsLoginOrRegister(true);
     } catch (error) {
-      console.error(
-        "Authentication failed:",
-        error.response?.data || error.message
-      ); // Handle the error, e.g., show a message to the user
+      // console.error(
+      //   "Authentication failed:",
+      //   error.response?.data || error.message
+      // ); // Handle the error, e.g., show a message to the user
+      if (error.response.status === 409) {
+        toast.error("User already exists", {
+          position: "bottom-right",
+        });
+      } else if (error.response && error.response.status === 401) {
+        toast.error("Wrong credentials", {
+          position: "bottom-right",
+        });
+      } else {
+        toast.error("Registration failed, please try again later", {
+          position: "bottom-right",
+        });
+      }
     }
   }
 
@@ -84,6 +99,7 @@ const RegisterAndLoginForm = () => {
           )}
         </div>
       </form>
+      <ToastContainer />
     </div>
   );
 };
