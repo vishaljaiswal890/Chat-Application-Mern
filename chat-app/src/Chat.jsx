@@ -1,5 +1,4 @@
 import { useContext, useEffect, useRef, useState } from "react";
-import Avatar from "./Avatar";
 import Logo from "./Logo";
 import { UserContext } from "./UserContext.jsx";
 import uniqBy from "lodash/uniqBy";
@@ -164,7 +163,7 @@ export default function Chat() {
           ))}
         </div>
         <div className="flex items-center justify-center p-2">
-          <span className="text-sm text-gray-600 flex mr-10 items-center">
+          <span className="text-sm text-gray-600 flex mr-10 items-center bg-gray-100 px-2 py-1 rounded">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
@@ -182,14 +181,14 @@ export default function Chat() {
           </span>
           <button
             onClick={handleLogout}
-            className="bg-blue-200 text-gray-600 px-2 py-1 rounded-sm border"
+            className="bg-slate-800 text-white text-sm hover:bg-slate-600 px-2 py-1 rounded border"
           >
             Logout
           </button>
         </div>
       </div>
 
-      <div className="flex flex-col bg-blue-200 w-2/3 p-2" key={selectedUserId}>
+      <div className="flex flex-col bg-slate-800 w-2/3 p-2" key={selectedUserId}>
         <div className="flex-grow">
           {!selectedUserId && (
             <div className="flex items-center justify-center h-full">
@@ -212,7 +211,7 @@ export default function Chat() {
                       className={
                         "text-left inline-block p-2 my-2 rounded-md text-sm " +
                         (message.sender === id
-                          ? "bg-blue-500 text-white"
+                          ? "bg-blue-600 text-white"
                           : "bg-white text-gray-500")
                       }
                     >
