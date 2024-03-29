@@ -36,10 +36,6 @@ const RegisterAndLoginForm = () => {
       setId(data.id);
       setIsLoginOrRegister(true);
     } catch (error) {
-      // console.error(
-      //   "Authentication failed:",
-      //   error.response?.data || error.message
-      // ); // Handle the error, e.g., show a message to the user
       if (error.response.status === 409) {
         toast.error("User already exists", {
           position: "bottom-right",
