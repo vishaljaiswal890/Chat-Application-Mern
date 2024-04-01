@@ -11,6 +11,8 @@ const ws = require("ws");
 const fs = require("fs");
 
 dotenv.config();
+const router = express.Router();
+
 // Connect to MongoDB using async/await
 async function connectToDatabase() {
   try {
