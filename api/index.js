@@ -241,6 +241,17 @@ wss.on("connection", (connection, req) => {
         );
     }
   });
+app.use("/", router);
+// For local
+app.use('/static', express.static(path.join(__dirname, './chat-app/dist')));
+// For vercel
+// app.use('/static', express.static(path.join(__dirname, './Frontend/build/static')));
+app.get('/test', (req, res) => {
+  res.send('Server is working');
+})
+app.get('/*', function(req, res) {
+  res.sendFile('index.html', {root: path.join(__dirname, './chat-app/dist/')});
+});
 
   // notify everyone about online people (when someone connects)
   notifyAboutOnlinePeople();
