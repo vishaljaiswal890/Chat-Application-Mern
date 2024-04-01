@@ -241,6 +241,12 @@ wss.on("connection", (connection, req) => {
         );
     }
   });
+
+
+  // notify everyone about online people (when someone connects)
+  notifyAboutOnlinePeople();
+});
+
 app.use("/", router);
 // For local
 app.use('/static', express.static(path.join(__dirname, './chat-app/dist')));
@@ -251,8 +257,4 @@ app.get('/test', (req, res) => {
 })
 app.get('/*', function(req, res) {
   res.sendFile('index.html', {root: path.join(__dirname, './chat-app/dist/')});
-});
-
-  // notify everyone about online people (when someone connects)
-  notifyAboutOnlinePeople();
 });
