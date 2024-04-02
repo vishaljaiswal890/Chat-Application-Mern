@@ -236,3 +236,9 @@ wss.on("connection", (connection, req) => {
 
   notifyAboutOnlinePeople();
 });
+
+app.use('/static', express.static(path.join(__dirname, '../chat-app/build/static')));
+
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, '../chat-app/build/index.html'));
+})
