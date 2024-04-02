@@ -4,6 +4,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { UserContext } from "./UserContext.jsx";
 import { quotes } from "./quotes.js";
+import Logo from "./Logo.jsx";
 
 const RegisterAndLoginForm = () => {
   const [username, setUserName] = useState("");
@@ -42,7 +43,7 @@ const RegisterAndLoginForm = () => {
       setId(data.id);
       setIsLoginOrRegister(true);
     } catch (error) {
-      if (error.response.status === 409) {
+      if (error.response && error.response.status === 409) {
         toast.error("User already exists", {
           position: "bottom-right",
         });
@@ -59,10 +60,15 @@ const RegisterAndLoginForm = () => {
   }
 
   return (
-    <div className="bg-blue-50 h-screen flex items-center justify-center">
+    <div className="bg-blue-50 h-screen flex items-center justify-center" style={{backgroundImage: 'url("https://images.unsplash.com/photo-1557683304-673a23048d34?q=80&w=1700&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D")'}}>
       <div className="w-full max-w-lg flex rounded-lg overflow-hidden bg-white shadow-lg">
-      <div className="flex-1 bg-gray-100 p-8 flex items-center justify-center">
-          <div className="text-center text-gray-600 italic">"{randomQuote}"</div>
+        <div className="flex-1 bg-gray-100 p-8 flex items-center justify-center relative">
+          <div className="absolute top-0 left-0 "> 
+            <Logo />
+          </div>
+          <div className="text-center text-gray-600 text-lg">
+            "{randomQuote}"
+          </div>
         </div>
         <div className="flex-1 p-8">
           <form onSubmit={handleSubmit}>
@@ -84,7 +90,7 @@ const RegisterAndLoginForm = () => {
             />
             <button
               type="submit"
-              className="bg-blue-500 text-white block w-full rounded-sm p-2 mb-4"
+              className="bg-blue-500 text-white block w-full rounded-sm p-2 mb-4 hover:bg-blue-700 transition duration-300"
             >
               {isLoginOrRegister ? "Register" : "Login"}
             </button>

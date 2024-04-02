@@ -9,11 +9,13 @@ const cookieParser = require("cookie-parser");
 const Message = require("./models/Message");
 const ws = require("ws");
 const fs = require("fs");
+const path =require("path");
 
 dotenv.config();
-const router = express.Router();
 
-// Connect to MongoDB using async/await
+const jwtSecret = process.env.JWT_SECRET;
+const bcryptSalt = bcrypt.genSaltSync(10);
+
 async function connectToDatabase() {
   try {
     await mongoose.connect(process.env.MONGO_URL);
@@ -25,21 +27,18 @@ async function connectToDatabase() {
 
 connectToDatabase();
 
-//
-const jwtSecret = process.env.JWT_SECRET;
-const bcryptSalt = bcrypt.genSaltSync(10);
-
-//
 const app = express();
+const router = express.Router();
+
 app.use("/uploads", express.static(__dirname + "/uploads"));
-app.use(express.json());
+const corsOptions = {
+  origin: 'http://localhost:5173',
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
 app.use(cookieParser());
-app.use(
-  cors({
-    credentials: true,
-    origin: process.env.CLIENT_URL,
-  })
-);
+app.use(express.json());
 
 async function getUserDataFromRequest(req) {
   return new Promise((resolve, reject) => {
@@ -80,9 +79,7 @@ app.get("/profile", (req, res) => {
   if (token) {
     jwt.verify(token, jwtSecret, {}, (err, userData) => {
       if (err) throw err;
-      res.json({
-        userData,
-      });
+      res.json({ userData });
     });
   } else {
     res.status(401).json("no token");
@@ -101,12 +98,9 @@ app.post("/login", async (req, res) => {
         {},
         (err, token) => {
           if (err) throw err;
-          res
-            .cookie("token", token, { sameSite: "none", secure: true })
+          res.cookie("token", token, { sameSite: "none", secure: true })
             .status(200)
-            .json({
-              id: foundUser._id,
-            });
+            .json({ id: foundUser._id });
         }
       );
     } else {
@@ -142,12 +136,9 @@ app.post("/register", async (req, res) => {
       {},
       (err, token) => {
         if (err) throw err;
-        res
-          .cookie("token", token, { sameSite: "none", secure: true })
+        res.cookie("token", token, { sameSite: "none", secure: true })
           .status(201)
-          .json({
-            id: createdUser._id,
-          });
+          .json({ id: createdUser._id });
       }
     );
   } catch (err) {
@@ -188,7 +179,6 @@ wss.on("connection", (connection, req) => {
     clearTimeout(connection.deathTimer);
   });
 
-  // read username and id from the cookie for this connection
   const cookies = req.headers.cookie;
   if (cookies) {
     const tokenCookieString = cookies
@@ -244,19 +234,5 @@ wss.on("connection", (connection, req) => {
     }
   });
 
-
-  // notify everyone about online people (when someone connects)
   notifyAboutOnlinePeople();
-});
-
-app.use("/", router);
-// For local
-app.use('/static', express.static(path.join(__dirname, './chat-app/dist')));
-// For vercel
-// app.use('/static', express.static(path.join(__dirname, './Frontend/build/static')));
-app.get('/test', (req, res) => {
-  res.send('Server is working');
-})
-app.get('/*', function(req, res) {
-  res.sendFile('index.html', {root: path.join(__dirname, './chat-app/dist/')});
 });
