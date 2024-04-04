@@ -150,9 +150,9 @@ app.get('/*', (req, res) => {
   res.sendFile('index.html', {root: path.join(__dirname, '/dist/')});
 })
 
-// const server = app.listen(process.env.PORT || 4000, () => {
-//   console.log("Server started");
-// });
+const server = app.listen(process.env.PORT || 4000, () => {
+  console.log("Server started");
+});
 
 
 // const wss = new ws.WebSocketServer({ server });
