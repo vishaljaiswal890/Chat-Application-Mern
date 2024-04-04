@@ -150,11 +150,13 @@ app.post("/register", async (req, res) => {
 
 app.use('/assets', express.static(path.join(__dirname, 'dist//assets')));
 
-app.get('/', (req, res) => {
+app.get('/*', (req, res) => {
   res.sendFile(path.join(__dirname, '//dist//index.html'));
 })
 
-const server = app.listen(4000);
+const server = app.listen(process.env.PORT || 4000, () => {
+  
+});
 
 
 const wss = new ws.WebSocketServer({ server });
