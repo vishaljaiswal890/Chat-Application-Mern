@@ -10,6 +10,9 @@ const Message = require("./models/Message");
 const ws = require("ws");
 const fs = require("fs");
 const path =require("path");
+const morgan = require('morgan')
+
+
 
 dotenv.config();
 
@@ -30,10 +33,11 @@ connectToDatabase();
 const app = express();
 const router = express.Router();
 
-app.use("/uploads", express.static(__dirname + "/uploads"));
+// app.use("/uploads", express.static(__dirname + "/uploads"));
 app.use(cors());
 app.use(cookieParser());
 app.use(express.json());
+app.use(morgan('dev'))
 
 // async function getUserDataFromRequest(req) {
 //   return new Promise((resolve, reject) => {
@@ -50,7 +54,7 @@ app.use(express.json());
 // }
 
 app.get("/test", (req, res) => {
-  res.json("test OK");
+  res.send("test OK");
 });
 
 // app.get("/messages/:userId", async (req, res) => {
