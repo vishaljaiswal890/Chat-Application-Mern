@@ -148,7 +148,7 @@ app.post("/register", async (req, res) => {
 });
 
 
-app.use('/assets', express.static(path.join(__dirname, 'dist/assets/')));
+app.get('/assets', express.static(path.join(__dirname, 'dist/assets/')));
 
 app.get('/*', (req, res) => {
   // res.sendFile(path.join(__dirname, '//dist//index.html'));
