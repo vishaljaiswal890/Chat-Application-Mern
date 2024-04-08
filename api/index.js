@@ -151,7 +151,7 @@ app.use(express.static(path.join(__dirname, 'dist')));
 app.get('/assets', express.static(path.join(__dirname, 'dist/assets/')));
 
 app.get('/*', (req, res) => {
-  res.sendFile(path.join(__dirname, '//dist//index.html'));
+  res.sendFile(path.join(__dirname, '/dist/index.html'));
   // res.sendFile('index.html', {root: path.join(__dirname, '/dist/')});
 })
 
