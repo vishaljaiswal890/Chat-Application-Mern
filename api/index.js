@@ -34,7 +34,7 @@ const app = express();
 const router = express.Router();
 
 app.use("/uploads", express.static(__dirname + "/uploads"));
-app.use(cors());
+app.use(cors("*"));
 app.use(cookieParser());
 app.use(express.json());
 app.use(morgan('dev'))
